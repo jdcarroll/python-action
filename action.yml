@@ -1,0 +1,34 @@
+# action.yml
+name: 'Jeffs python action'
+description: 'A simple python github action'
+inputs:
+  num:
+    description: 'number to get the square of'
+    required: true
+    default: "1"
+
+outputs:
+  num_squared:
+    description: 'Square of the input'
+    value: ${{ steps.get-square.oputs.num_squared }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Dependancies
+      run: pip install -r requirements.txt
+      shell: bash
+    - name: Pass Intputs To Shell
+      shell: bash
+      run: |
+              echo "INPUT_NUM=${{ inputs.num }}" >> $GITHUB_ENV
+      
+    - name: Fetch the numbers square
+      id: get-square
+      shell: bash
+      run: python src/get_num_square.py
+
